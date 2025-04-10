@@ -126,11 +126,6 @@ export default function SummaryPage() {
     return { quantity, cost };
   };
 
-  // Handle print functionality
-  const handlePrint = () => {
-    window.print();
-  };
-
   // Handle export to CSV
   const handleExport = () => {
     const summary = getSummary();
@@ -170,12 +165,6 @@ export default function SummaryPage() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800">Order Summary</h1>
         <div className="flex gap-3">
-          <button
-            onClick={handlePrint}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Print Summary
-          </button>
           <button
             onClick={handleExport}
             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
@@ -263,9 +252,9 @@ export default function SummaryPage() {
                   Ordered Sandwiches:
                 </h4>
                 <div className="space-y-2">
-                  {item.orders.map((order) => (
+                  {item.orders.map((order, index) => (
                     <div
-                      key={`${item.userId}-${order.sandwichId}`}
+                      key={`${item.userId}-${order.sandwichId}-${index}`}
                       className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"
                     >
                       <div className="font-medium text-gray-600">
