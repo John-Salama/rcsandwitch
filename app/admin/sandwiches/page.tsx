@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface Sandwich {
   id: string;
@@ -183,10 +184,12 @@ export default function SandwichesPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-100 rounded-xl p-8 text-center shadow-md"
         >
-          <img
+          <Image
             src="/file.svg"
             alt="No sandwiches"
-            className="w-20 h-20 mx-auto mb-4 opacity-50"
+            width={80}
+            height={80}
+            className="mx-auto mb-4 opacity-50"
           />
           <h3 className="text-xl font-semibold text-amber-800 mb-2">
             No sandwiches found
