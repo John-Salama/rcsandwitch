@@ -126,6 +126,40 @@ export default function SummaryPage() {
     return { quantity, cost };
   };
 
+  // Get sandwich totals across all orders
+  const getSandwichSummary = () => {
+    const sandwichMap: Record<
+      string,
+      {
+        id: string;
+        name: string;
+        count: number;
+        totalPrice: number;
+      }
+    > = {};
+
+    orders.forEach((order) => {
+      order.items.forEach((item) => {
+        if (!item.sandwich) return;
+
+        const id = item.sandwich.id;
+        if (!sandwichMap[id]) {
+          sandwichMap[id] = {
+            id,
+            name: item.sandwich.name,
+            count: 0,
+            totalPrice: 0,
+          };
+        }
+
+        sandwichMap[id].count += item.quantity;
+        sandwichMap[id].totalPrice += item.price * item.quantity;
+      });
+    });
+
+    return Object.values(sandwichMap).sort((a, b) => b.count - a.count); // Sort by popularity
+  };
+
   // Handle export to CSV
   const handleExport = () => {
     const summary = getSummary();
@@ -224,6 +258,35 @@ export default function SummaryPage() {
                   ${getGrandTotal().cost.toFixed(2)}
                 </p>
               </div>
+            </div>
+          </div>
+
+          {/* Sandwich summary card */}
+          <div className="bg-white rounded-lg shadow-md p-6 print:shadow-none">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Sandwich Summary
+            </h2>
+            <div className="space-y-4">
+              {getSandwichSummary().map((sandwich) => (
+                <div
+                  key={sandwich.id}
+                  className="flex justify-between items-center bg-gray-50 p-4 rounded-lg"
+                >
+                  <div className="text-lg font-medium text-gray-700">
+                    {sandwich.name}
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm text-gray-500">Total Sold</div>
+                    <div className="text-xl font-bold text-orange-600">
+                      {sandwich.count}
+                    </div>
+                    <div className="text-sm text-gray-500">Total Revenue</div>
+                    <div className="text-xl font-bold text-orange-600">
+                      ${sandwich.totalPrice.toFixed(2)}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
