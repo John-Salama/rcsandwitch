@@ -28,13 +28,12 @@ interface Order {
 }
 
 interface SummaryItem {
-  sandwichId: string;
-  sandwichName: string;
-  totalQuantity: number;
+  userId: string;
+  userName: string;
   totalCost: number;
   orders: {
-    orderId: string;
-    userName: string;
+    sandwichId: string;
+    sandwichName: string;
     quantity: number;
     price: number;
   }[];
@@ -70,31 +69,37 @@ export default function SummaryPage() {
     fetchOrders();
   }, [selectedDate]);
 
-  // Group orders by sandwich for summary
+  // Group orders by user for summary
   const getSummary = (): SummaryItem[] => {
     const summary: Record<string, SummaryItem> = {};
 
     orders.forEach((order) => {
+      // Initialize user summary if not exists
+      if (!summary[order.user.id]) {
+        summary[order.user.id] = {
+          userId: order.user.id,
+          userName: order.user.name,
+          totalCost: 0,
+          orders: [],
+        };
+      }
+
       order.items.forEach((item) => {
-        // Initialize sandwich summary if not exists
-        if (!summary[item.sandwich.id]) {
-          summary[item.sandwich.id] = {
-            sandwichId: item.sandwich.id,
-            sandwichName: item.sandwich.name,
-            totalQuantity: 0,
-            totalCost: 0,
-            orders: [],
-          };
+        // Skip items with null sandwich
+        if (!item.sandwich) {
+          console.warn(
+            `Found order item without sandwich data in order ${order.id}`
+          );
+          return;
         }
 
         // Add to totals
-        summary[item.sandwich.id].totalQuantity += item.quantity;
-        summary[item.sandwich.id].totalCost += item.quantity * item.price;
+        summary[order.user.id].totalCost += item.quantity * item.price;
 
         // Add individual order details
-        summary[item.sandwich.id].orders.push({
-          orderId: order.id,
-          userName: order.user.name,
+        summary[order.user.id].orders.push({
+          sandwichId: item.sandwich.id,
+          sandwichName: item.sandwich.name,
           quantity: item.quantity,
           price: item.price * item.quantity,
         });
@@ -102,7 +107,7 @@ export default function SummaryPage() {
     });
 
     return Object.values(summary).sort((a, b) =>
-      a.sandwichName.localeCompare(b.sandwichName)
+      a.userName.localeCompare(b.userName)
     );
   };
 
@@ -131,26 +136,22 @@ export default function SummaryPage() {
     const summary = getSummary();
     const grandTotal = getGrandTotal();
 
-    let csvContent = "Sandwich,Total Quantity,Total Cost,Ordered By\n";
+    let csvContent = "User,Total Cost,Ordered Sandwiches\n";
 
     summary.forEach((item) => {
-      // Add the sandwich summary line
-      csvContent += `"${item.sandwichName}",${
-        item.totalQuantity
-      },$${item.totalCost.toFixed(2)},""\n`;
+      // Add the user summary line
+      csvContent += `"${item.userName}",$${item.totalCost.toFixed(2)},""\n`;
 
       // Add individual order details
       item.orders.forEach((order) => {
-        csvContent += `"","${order.quantity}","$${order.price.toFixed(2)}","${
-          order.userName
+        csvContent += `"","$${order.price.toFixed(2)}","${
+          order.sandwichName
         }"\n`;
       });
     });
 
     // Add grand total
-    csvContent += `\n"Grand Total",${
-      grandTotal.quantity
-    },$${grandTotal.cost.toFixed(2)},""\n`;
+    csvContent += `\n"Grand Total",$${grandTotal.cost.toFixed(2)},""\n`;
 
     // Create and trigger download
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -237,32 +238,20 @@ export default function SummaryPage() {
             </div>
           </div>
 
-          {/* Sandwich summary cards */}
+          {/* User summary cards */}
           {getSummary().map((item) => (
             <div
-              key={item.sandwichId}
+              key={item.userId}
               className="bg-white rounded-lg shadow-md overflow-hidden print:shadow-none print:border print:border-gray-200"
             >
               <div className="p-6 bg-gray-50 border-b">
                 <div className="flex justify-between items-center">
                   <h3 className="text-xl font-semibold text-gray-800">
-                    {item.sandwichName}
+                    {item.userName}
                   </h3>
                   <div className="text-right">
-                    <div className="text-sm text-gray-500">Total Quantity</div>
+                    <div className="text-sm text-gray-500">Total Cost</div>
                     <div className="text-xl font-bold text-orange-600">
-                      {item.totalQuantity}
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-2 flex justify-between items-center">
-                  <div className="text-gray-700">
-                    Ordered by {item.orders.length}{" "}
-                    {item.orders.length === 1 ? "person" : "people"}
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-700">Total Cost</div>
-                    <div className="text-lg font-semibold text-gray-600">
                       ${item.totalCost.toFixed(2)}
                     </div>
                   </div>
@@ -271,16 +260,16 @@ export default function SummaryPage() {
 
               <div className="p-6">
                 <h4 className="text-md font-medium text-gray-700 mb-3">
-                  Individual Orders:
+                  Ordered Sandwiches:
                 </h4>
                 <div className="space-y-2">
                   {item.orders.map((order) => (
                     <div
-                      key={`${item.sandwichId}-${order.orderId}`}
+                      key={`${item.userId}-${order.sandwichId}`}
                       className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"
                     >
                       <div className="font-medium text-gray-600">
-                        {order.userName}
+                        {order.sandwichName}
                       </div>
                       <div className="text-right">
                         <div className="text-gray-600">
