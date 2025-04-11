@@ -226,9 +226,24 @@ export default function AdminDashboard() {
                 <p className="text-4xl font-bold text-gray-800 mb-4">
                   {stats.totalUsers}
                 </p>
-                <span className="text-blue-500 font-medium inline-flex items-center">
-                  <span>Registered Users</span>
-                </span>
+                <Link
+                  href="/admin/users"
+                  className="text-blue-500 hover:text-blue-600 font-medium inline-flex items-center transition-colors"
+                >
+                  <span>View Users</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 ml-1"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Link>
               </div>
             </motion.div>
           </motion.div>
@@ -247,7 +262,7 @@ export default function AdminDashboard() {
                 Shortcuts to frequently used actions
               </p>
             </div>
-            <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link
                 href="/admin/sandwiches/new"
                 className="group relative bg-white border border-gray-200 hover:border-green-500 rounded-xl p-6 transition-all duration-300 flex items-start space-x-4"
@@ -304,6 +319,36 @@ export default function AdminDashboard() {
                   </h3>
                   <p className="text-sm text-gray-500 mt-1">
                     See order summaries and details
+                  </p>
+                </div>
+              </Link>
+
+              <Link
+                href="/admin/users"
+                className="group relative bg-white border border-gray-200 hover:border-purple-500 rounded-xl p-6 transition-all duration-300 flex items-start space-x-4"
+              >
+                <div className="bg-purple-100 rounded-lg p-3 text-purple-600 group-hover:bg-purple-500 group-hover:text-white transition-all duration-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-900 group-hover:text-purple-600 transition-colors duration-300">
+                    Manage Users
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    View all registered user accounts
                   </p>
                 </div>
               </Link>
