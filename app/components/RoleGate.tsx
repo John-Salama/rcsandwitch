@@ -32,7 +32,7 @@ export default function RoleGate({ children, requiredRole }: RoleGateProps) {
       return;
     }
 
-    // If admin tries to access user area, we'll redirect to login to authenticate as user
+    // If admin tries to access user area, we&apos;ll redirect to login to authenticate as user
     if (requiredRole === "user" && isAdmin) {
       router.push(`/login?requiredRole=user`);
       return;

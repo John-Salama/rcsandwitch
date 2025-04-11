@@ -4,7 +4,7 @@ import { authOptions } from "@/app/lib/authOptions";
 
 export async function POST(request) {
   try {
-    // Get the user's session to retrieve the authentication token
+    // Get the user&apos;s session to retrieve the authentication token
     const session = await getServerSession(authOptions);
 
     // Check if user is authenticated

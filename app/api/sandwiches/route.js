@@ -25,7 +25,7 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    // Get the user's session to retrieve the authentication token
+    // Get the user&apos;s session to retrieve the authentication token
     const session = await getServerSession(authOptions);
     const body = await request.json();
     const apiBaseUrl = process.env.API_BASE_URL;

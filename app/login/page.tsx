@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const requiredRole = searchParams.get("requiredRole");
@@ -51,9 +51,9 @@ export default function LoginPage() {
       const session = await res.json();
       const isAdmin = session?.user?.isAdmin;
 
-      // If there's a required role parameter, check if the user has the correct role
+      // If there&apos;s a required role parameter, check if the user has the correct role
       if (requiredRole === "admin" && !isAdmin) {
-        setError("This account doesn't have administrator privileges");
+        setError("This account doesn&apos;t have administrator privileges");
         setIsLoading(false);
         return;
       }
@@ -258,7 +258,7 @@ export default function LoginPage() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href="/register"
                 className="font-medium text-orange-600 hover:text-orange-500 transition-colors"
@@ -291,5 +291,22 @@ export default function LoginPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 p-4">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-orange-500"></div>
+            <p className="mt-2 text-orange-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <LoginPageContent />
+    </Suspense>
   );
 }
