@@ -6,23 +6,47 @@ export async function POST(request) {
   try {
     // Get the user's session to retrieve the authentication token
     const session = await getServerSession(authOptions);
+
+    // Check if user is authenticated
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { error: "Authentication required. Please log in to place an order." },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const apiBaseUrl = process.env.API_BASE_URL;
 
-    // Prepare headers with authentication token if available
+    // Validate required fields before sending to the API
+    if (!body.items || !Array.isArray(body.items) || body.items.length === 0) {
+      return NextResponse.json(
+        { error: "At least one sandwich is required in your order" },
+        { status: 400 }
+      );
+    }
+
+    // Prepare headers with authentication token
     const headers = {
       "Content-Type": "application/json",
     };
 
-    // Add authorization header if user is logged in
-    if (session?.user?.token) {
+    // Add authorization header with user token
+    if (session.user.token) {
       headers.Authorization = `Bearer ${session.user.token}`;
     }
+
+    // Add user name and ID to the request body
+    const orderData = {
+      ...body,
+      userName: session.user.name, // Add user name from session
+      userId: session.user.id, // Add the user ID from the session
+    };
 
     const response = await fetch(`${apiBaseUrl}/orders`, {
       method: "POST",
       headers,
-      body: JSON.stringify(body),
+      body: JSON.stringify(orderData),
     });
 
     if (!response.ok) {

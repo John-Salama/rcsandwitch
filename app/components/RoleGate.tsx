@@ -1,0 +1,79 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+interface RoleGateProps {
+  children: React.ReactNode;
+  requiredRole: "admin" | "user";
+}
+
+export default function RoleGate({ children, requiredRole }: RoleGateProps) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (status === "loading") return;
+
+    if (!session) {
+      // If not logged in, redirect to login page with the required role as parameter
+      router.push(`/login?requiredRole=${requiredRole}`);
+      return;
+    }
+
+    const isAdmin = session.user?.isAdmin;
+
+    // If trying to access admin area but user is not admin
+    if (requiredRole === "admin" && !isAdmin) {
+      // Redirect to login to authenticate as admin
+      router.push(`/login?requiredRole=admin`);
+      return;
+    }
+
+    // If admin tries to access user area, we'll redirect to login to authenticate as user
+    if (requiredRole === "user" && isAdmin) {
+      router.push(`/login?requiredRole=user`);
+      return;
+    }
+
+    setIsLoading(false);
+  }, [session, status, router, requiredRole]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-50 to-amber-100">
+        <div className="text-center">
+          <div className="flex justify-center">
+            <svg
+              className="animate-spin h-12 w-12 text-orange-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </div>
+          <h2 className="mt-4 text-xl font-semibold text-gray-700">
+            Checking permissions...
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}

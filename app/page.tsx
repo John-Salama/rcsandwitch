@@ -16,7 +16,7 @@ export default function Home() {
         <div className="absolute top-1/3 left-1/3 w-1/2 h-1/2 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
-      <main className="flex flex-col items-center justify-center max-w-6xl mx-auto px-4 py-16 md:py-24 relative z-10">
+      <main className="flex flex-col items-center justify-center max-w-6xl mx-auto px-4 pt-8 pb-16 md:py-20 relative z-10">
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4 bg-gradient-to-r from-orange-700 via-orange-600 to-amber-600 bg-clip-text text-transparent">
             RCSandwitch
@@ -114,11 +114,10 @@ export default function Home() {
                 <span className="text-orange-600 text-xl font-bold">1</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Select Your Sandwich
+                Register & Login
               </h3>
               <p className="text-gray-600">
-                Enter your name and choose from our menu of delicious sandwich
-                options.
+                Create an account and login to access our ordering system.
               </p>
             </div>
 
@@ -127,11 +126,11 @@ export default function Home() {
                 <span className="text-orange-600 text-xl font-bold">2</span>
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Order Before 11:00 PM
+                Select & Order Before 11:00 PM
               </h3>
               <p className="text-gray-600">
-                Submit your order before the daily cutoff time to ensure
-                same-day delivery.
+                Choose from our menu and submit your order before the daily
+                cutoff time.
               </p>
             </div>
 
@@ -157,15 +156,23 @@ export default function Home() {
               Ready to Order?
             </h2>
             <p className="text-lg mb-6 max-w-2xl mx-auto">
-              Satisfy your hunger with our delicious sandwich selection. Order
-              now for today&apos;s lunch!
+              Satisfy your hunger with our delicious sandwich selection. Sign up
+              now to start ordering!
             </p>
-            <Link
-              href="/user"
-              className="inline-flex items-center justify-center bg-white text-orange-600 hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-            >
-              Place Your Order
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center bg-white text-orange-600 hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                Register Now
+              </Link>
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center bg-orange-600/20 hover:bg-orange-600/30 border border-white/40 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                Log In
+              </Link>
+            </div>
           </div>
         </div>
       </main>
